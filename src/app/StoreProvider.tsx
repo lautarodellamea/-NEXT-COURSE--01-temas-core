@@ -22,15 +22,13 @@ export default function StoreProvider({
     // para inicializar un valor
     // ya lo inicializamos en el propio slice (counterSlice)
     // storeRef.current.dispatch(initCounterState(count))
-
-    // para poder obtener los pokemons favoritos del localstorage y cargarlos
-    storeRef.current.dispatch(setFavoritePokemons(JSON.parse(localStorage.getItem("favorite-pokemons") ?? "{}")))
   }
 
-
-
-
-
+  // Inicializar favoritos desde localStorage solo en el cliente (evita "localStorage is not defined" en SSR/prerender)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    storeRef.current?.dispatch(setFavoritePokemons(JSON.parse(localStorage.getItem("favorite-pokemons") ?? "{}")))
+  }, [])
 
   return <Provider store={storeRef.current}>{children}</Provider>
 }

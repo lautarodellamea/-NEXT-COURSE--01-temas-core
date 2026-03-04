@@ -4,9 +4,9 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 
 interface Props {
-  params: {
+  params: Promise<{
     name: string
-  }
+  }>
 }
 
 // genero paginas estaticas al hacer el build (en build time)
@@ -28,11 +28,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   try {
-    const { id, name } = await getPokemon(params.name)
+    const { name } = await params
+    const { id, name: pokemonName } = await getPokemon(name)
 
     return {
-      title: `#${id} - ${name}`,
-      description: `Página del pokémon ${name}`
+      title: `#${id} - ${pokemonName}`,
+      description: `Página del pokémon ${pokemonName}`
     }
   } catch (error) {
     return {
@@ -70,7 +71,8 @@ const getPokemon = async (name: string): Promise<Pokemon> => {
 
 export default async function PokemonPage({ params }: Props) {
 
-  const pokemon = await getPokemon(params.name)
+  const { name } = await params
+  const pokemon = await getPokemon(name)
 
   return (
     <div className="flex mt-5 flex-col items-center text-slate-800">
