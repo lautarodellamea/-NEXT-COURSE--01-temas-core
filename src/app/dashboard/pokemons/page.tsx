@@ -56,6 +56,11 @@ const getPokemons = async (
 };
 
 export default async function PokemonsPage() {
+  // https://nextjs.org/docs/app/api-reference/directives/use-cache#usage
+  // recordar poner en el next.config el cacheComponents: true,
+  // podemos hacer que el componente se cachee de esta forma
+  // es recomendable poner el Suspence en el laayout
+  "use cache";
   const pokemons = await getPokemons(151);
 
   return (
