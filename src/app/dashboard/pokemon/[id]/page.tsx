@@ -1,5 +1,6 @@
 import { Pokemon } from "@/pokemons";
 import { Metadata } from "next";
+import { cacheTag } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -129,6 +130,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   Si resp.ok es false, llamamos notFound() para renderizar 404.
 */
 const getPokemon = async (id: string): Promise<Pokemon> => {
+
+  'use cache'
+  cacheTag('pokemon', id)
+
   const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
     next: {
       // 60s * 60m * 24h * 30d * 6 = 6 meses

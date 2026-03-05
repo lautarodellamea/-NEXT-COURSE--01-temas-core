@@ -1,4 +1,5 @@
 import { PokemonGrid, PokemonsResponse, SimplePokemon } from "@/pokemons";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { getServerSideProps } from "next/dist/build/templates/pages";
 import { notFound } from "next/navigation";
 
@@ -61,6 +62,15 @@ export default async function PokemonsPage() {
   // podemos hacer que el componente se cachee de esta forma
   // es recomendable poner el Suspence en el laayout
   "use cache";
+
+
+  // Alternativa al cacheLife
+  // con cacheTags podemos ponerle una tag al cache para despues en cualquier otra parte de la app revalidar esto
+  cacheTag('pokemons')
+  revalidateTag('pokemons', 'max') // esto convendria llamarlo en alguna funcion del lado del server o algun action
+  // el max fuerza la revalidacion de todo el arbol relacionado con ese tag
+
+
   const pokemons = await getPokemons(151);
 
   return (
